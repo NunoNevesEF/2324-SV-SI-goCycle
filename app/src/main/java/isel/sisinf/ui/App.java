@@ -63,6 +63,19 @@ class UI
 
     }
 
+    // ADDED CODE TO UI CLASS HERE
+    private String __connectionString;
+    public String getConnectionString()
+    {
+        return __connectionString;
+    }
+    public void setConnectionString(String s)
+    {
+        __connectionString = s;
+    }
+
+    // END OF ADDED CODE TO UI CLASS
+
     public static UI getInstance()
     {
         // DO NOT CHANGE ANYTHING!
@@ -191,6 +204,7 @@ class UI
         System.out.println("Eduardo Ramos");
         System.out.println("Gonçalo Carvalho");
         System.out.println("Nuno Neves");
+        System.out.println("-----------------------------------------");
         System.out.println("DAL version:"+ isel.sisinf.jpa.Dal.version());
         System.out.println("Core version:"+ isel.sisinf.model.Core.version());
         
@@ -199,6 +213,8 @@ class UI
 
 public class App{
     public static void main(String[] args) throws Exception{
+        String url = "jdbc:postgresql://sisinfvlab1.dyn.fil.isel.pt:5432/?user=G16T42D&password=G16T42D&ssl=false";
+        UI.getInstance().setConnectionString(url);
         UI.getInstance().Run();
     }
 }
