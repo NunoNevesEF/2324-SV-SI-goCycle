@@ -213,7 +213,8 @@ class UI
 
 public class App{
     public static void main(String[] args) throws Exception{
-        String url = "jdbc:postgresql://sisinfvlab1.dyn.fil.isel.pt:5432/?user=G16T42D&password=G16T42D&ssl=false";
+        //String url = "jdbc:postgresql://sisinfvlab1.dyn.fil.isel.pt:5432/?user=G16T42D&password=G16T42D&ssl=false";
+        String url = "jdbc:postgresql://localhost:5433/?user=postgres&password=postgres&ssl=false";
         UI.getInstance().setConnectionString(url);
         UI.getInstance().Run();
     }
