@@ -205,7 +205,7 @@ class UI
         System.out.println("Gonçalo Carvalho");
         System.out.println("Nuno Neves");
         System.out.println("-----------------------------------------");
-        System.out.println("DAL version:"+ isel.sisinf.jpa.Dal.version());
+        //System.out.println("DAL version:"+ isel.sisinf.jpa.Dal.version());
         //System.out.println("Core version:"+ isel.sisinf.model.Core.version());
         
     }
