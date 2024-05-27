@@ -198,7 +198,6 @@ class UI
     }
     private void about()
     {
-        //COMMIT TEST TODO: DELETE THIS MESSAGE
         // TODO: Add your Group ID & member names
         System.out.println("Group ID: G16T42D");
         System.out.println("--------------- /Members/ ---------------");
@@ -207,7 +206,7 @@ class UI
         System.out.println("Nuno Neves");
         System.out.println("-----------------------------------------");
         System.out.println("DAL version:"+ isel.sisinf.jpa.Dal.version());
-        System.out.println("Core version:"+ isel.sisinf.model.Core.version());
+        //System.out.println("Core version:"+ isel.sisinf.model.Core.version());
         
     }
 }
