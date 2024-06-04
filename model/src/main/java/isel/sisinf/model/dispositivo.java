@@ -23,6 +23,8 @@ public class dispositivo {
 
     public String getNoserie() { return noserie; }
 
+    public void setNoserie(String noserie) {this.noserie = noserie;}
+
     public double getBateria() {return bateria;}
 
     public void setBateria(double bateria) {this.bateria = bateria;}

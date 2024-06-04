@@ -30,6 +30,8 @@ public class reserva {
 
     public String getNumero() {return numero;}
 
+    public void setNumero(String numero) {this.numero = numero;}
+
     public Timestamp getDtinicio() {return dtinicio;}
 
     public void setDtinicio(Timestamp dtinicio) {this.dtinicio = dtinicio;}
