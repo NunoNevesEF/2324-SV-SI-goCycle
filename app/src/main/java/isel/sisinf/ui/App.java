@@ -23,6 +23,10 @@ SOFTWARE.
 */
 package isel.sisinf.ui;
 
+import isel.sisinf.jpa.DataScope;
+import jakarta.persistence.EntityManager;
+import isel.sisinf.jpa.Utils;
+
 import java.util.Scanner;
 import java.util.HashMap;
 
@@ -161,10 +165,35 @@ class UI
     private static final int TAB_SIZE = 24;
 
     private void createCostumer() {
-        // TODO
+        System.out.println("Please write the params below in the same order");
+        System.out.println("nome,telefone,morada,cc,email,nacionalidade");
+
+        String[] params = Utils.getUserInput();
+
+        if (params.length != 6) {
+            System.out.println("Error: Invalid number of parameters. Please provide all parameters separated by commas.");
+            return;
+        }
+
+        String nome = params[0].trim();
+        String telefone = params[1].trim();
+        String morada = params[2].trim();
+        Integer cc = Integer.parseInt(params[3].trim());
+        String email = params[4].trim();
+        String nacionalidade = params[5].trim();
+
+        try (DataScope ds = new DataScope()) {
+            EntityManager em = ds.getEntityManager();
+            Utils.createCustomer(nome, telefone, morada, cc, email, nacionalidade, em);
+            ds.validateWork();
+        } catch (Exception e) {
+            System.out.println("Error: " + e.getMessage());
+        }
         System.out.println("createCostumer()");
     }
-  
+
+
+
     private void listExistingBikes()
     {
         // TODO
@@ -198,16 +227,12 @@ class UI
     }
     private void about()
     {
-        // TODO: Add your Group ID & member names
         System.out.println("Group ID: G16T42D");
         System.out.println("--------------- /Members/ ---------------");
         System.out.println("Eduardo Ramos");
         System.out.println("Gonçalo Carvalho");
         System.out.println("Nuno Neves");
         System.out.println("-----------------------------------------");
-        //System.out.println("DAL version:"+ isel.sisinf.jpa.Dal.version());
-        //System.out.println("Core version:"+ isel.sisinf.model.Core.version());
-        
     }
 }
 

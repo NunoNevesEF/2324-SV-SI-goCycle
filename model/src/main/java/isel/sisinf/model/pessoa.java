@@ -32,7 +32,7 @@ public class pessoa {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private String id;
+    private Integer id;
 
     @Column(name = "telefone", nullable = false)
     private int telefone;
@@ -54,9 +54,9 @@ public class pessoa {
 
     // Getters e Setters
 
-    public String getId() { return id; }
+    public Integer getId() { return id; }
 
-    public void setId(String id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

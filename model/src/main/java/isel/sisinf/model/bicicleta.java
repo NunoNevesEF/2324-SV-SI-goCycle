@@ -8,7 +8,7 @@ public class bicicleta {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private String id;
+    private Integer id;
 
     @Column(name = "modelo", nullable = false)
     private String modelo;
@@ -40,9 +40,9 @@ public class bicicleta {
 
     // Getters e Setters
 
-    public String getId() { return id; }
+    public Integer getId() { return id; }
 
-    public void setId(String id) {this.id = id;}
+    public void setId(Integer id) {this.id = id;}
 
     public String getModelo() {return modelo;}
 

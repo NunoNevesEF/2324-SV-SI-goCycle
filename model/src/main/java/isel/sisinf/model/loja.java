@@ -8,7 +8,7 @@ public class loja {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "codigo")
-    private String codigo;
+    private Integer codigo;
 
     @Column(name = "telefone", nullable = false)
     private int telefone;
@@ -29,9 +29,9 @@ public class loja {
 
     // Getters e Setters
 
-    public String getCodigo() { return codigo; }
+    public Integer getCodigo() { return codigo; }
 
-    public void setCodigo(String codigo) {
+    public void setCodigo(Integer codigo) {
         this.codigo = codigo;
     }
 

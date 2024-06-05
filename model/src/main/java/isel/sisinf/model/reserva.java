@@ -11,7 +11,7 @@ public class reserva {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "numero")
-    private String numero;
+    private Integer numero;
 
     @Column(name = "dtinicio", nullable = false)
     private Timestamp dtinicio;
@@ -28,9 +28,9 @@ public class reserva {
 
     // Getters e Setters
 
-    public String getNumero() {return numero;}
+    public Integer getNumero() {return numero;}
 
-    public void setNumero(String numero) {this.numero = numero;}
+    public void setNumero(Integer numero) {this.numero = numero;}
 
     public Timestamp getDtinicio() {return dtinicio;}
 
@@ -47,4 +47,10 @@ public class reserva {
     public bicicleta getBicicleta() {return bicicleta;}
 
     public void setBicicleta(bicicleta bicicleta) {this.bicicleta = bicicleta;}
+
+    public void setBicicletaId(Integer bicicletaId) {
+        bicicleta bicicleta = new bicicleta();
+        bicicleta.setId(bicicletaId);
+        this.bicicleta = bicicleta;
+    }
 }

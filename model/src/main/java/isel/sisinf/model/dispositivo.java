@@ -8,7 +8,7 @@ public class dispositivo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "noserie")
-    private String noserie;
+    private Integer noserie;
 
     @Column(name = "bateria", nullable = false)
     private double bateria;
@@ -21,9 +21,9 @@ public class dispositivo {
 
     // Getters e Setters
 
-    public String getNoserie() { return noserie; }
+    public Integer getNoserie() { return noserie; }
 
-    public void setNoserie(String noserie) {this.noserie = noserie;}
+    public void setNoserie(Integer noserie) {this.noserie = noserie;}
 
     public double getBateria() {return bateria;}
 
