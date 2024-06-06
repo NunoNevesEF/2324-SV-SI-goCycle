@@ -174,9 +174,8 @@ class UI
         System.out.println("Please write the params below in the same order");
         System.out.println("nome,telefone,morada,cc,email,nacionalidade");
 
-        String line = scanner.next();  // Use the existing Scanner
 
-        String[] params = line.split(",");
+        String[] params = Utils.getUserInputWithNoSpaces();
 
         if (params.length != 6) {
             System.out.println("Error: Invalid number of parameters. Please provide all parameters separated by commas.");
@@ -301,9 +300,7 @@ class UI
         System.out.println("cancelBooking");
         System.out.println("Please write the id of the booking you want to cancel.");
 
-        String line = scanner.next();  // Use the existing Scanner
-
-        String[] params = line.split(",");
+        String[] params = Utils.getUserInputWithNoSpaces();
 
         if (params.length != 1) {
             System.out.println("Error: Invalid number of parameters. Please provide all parameters separated by commas.");

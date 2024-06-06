@@ -121,10 +121,7 @@ public class Utils {
     // READ USER INPUT
     public static String[] getUserInputWithNoSpaces() {
         Scanner input = new Scanner(System.in);
-
         String line = input.nextLine();
-        System.out.println("line = " + line);
-
         return line.split(",");
     }
 
