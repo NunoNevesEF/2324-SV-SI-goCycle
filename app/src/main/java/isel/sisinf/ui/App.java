@@ -260,9 +260,7 @@ class UI
         }
     }
 
-    // FALTA DAR UPDATE NA BICICLETA PARA O ESTADO OCUPADO
-    private void makeBooking()
-    {
+    private void makeBooking() {
         // 2025-12-12/21:21:21,2026-12-12/21:21:21,65.00,1 USAR PARA TESTES
         System.out.println("makeBooking()");
         System.out.println("Please write the params below in the same order");
@@ -285,7 +283,7 @@ class UI
                 Timestamp dtinicio = new Timestamp(dateFormat.parse(params[0].trim()).getTime());
                 Timestamp dtfim = new Timestamp(dateFormat.parse(params[1].trim()).getTime());
                 EntityManager em = ds.getEntityManager();
-                Utils.makeBooking(bicicleta,dtinicio,dtfim,valor,em);
+                Utils.makeBooking(bicicleta, dtinicio, dtfim, valor, em);
                 ds.validateWork();
             } catch (Exception e) {
                 System.out.println("Error: " + e.getMessage());
@@ -293,6 +291,7 @@ class UI
             System.out.println("Booking was made.");
         }
     }
+
 
     // FALTA DAR UPDATE NA BICICLETA PARA O ESTADO LIVRE
     private void cancelBooking()

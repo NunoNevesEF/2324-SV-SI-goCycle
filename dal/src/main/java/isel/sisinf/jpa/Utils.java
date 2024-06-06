@@ -97,12 +97,16 @@ public class Utils {
     }
 
     public static void makeBooking(Integer bicicletaId, Timestamp dtInicio, Timestamp dtFim, BigDecimal valor, EntityManager em) {
-        Query query = em.createNativeQuery("INSERT INTO reserva (dtinicio, dtfim, valor, bicicleta) VALUES (?1, ?2, ?3, ?4)");
-        query.setParameter(1, dtInicio);
-        query.setParameter(2, dtFim);
-        query.setParameter(3, valor);
-        query.setParameter(4, bicicletaId);
-        query.executeUpdate();
+        Query query1 = em.createNativeQuery("INSERT INTO reserva (dtinicio, dtfim, valor, bicicleta) VALUES (?1, ?2, ?3, ?4)");
+        query1.setParameter(1, dtInicio);
+        query1.setParameter(2, dtFim);
+        query1.setParameter(3, valor);
+        query1.setParameter(4, bicicletaId);
+        query1.executeUpdate();
+
+        Query query2 = em.createNativeQuery("UPDATE bicicleta SET estado = 'ocupado' WHERE id = ?1");
+        query2.setParameter(1, bicicletaId);
+        query2.executeUpdate();
     }
 
     public static void cancelBooking(Integer reservaId, EntityManager em) {
@@ -114,6 +118,11 @@ public class Utils {
         if (deletedCount == 0) {
             throw new IllegalArgumentException("Reserva não encontrada para o ID: " + reservaId);
         }
+
+        Query query3 = em.createNativeQuery("UPDATE bicicleta SET estado = 'livre' WHERE id = ?1");
+        query3.setParameter(1, reservaId);
+        query3.executeUpdate();
+
         em.getTransaction().commit();
     }
 
