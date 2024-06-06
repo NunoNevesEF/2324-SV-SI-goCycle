@@ -12,6 +12,7 @@ public class MapperDispositivo implements IMapper<dispositivo, Integer> {
         try (DataScope ds = new DataScope()) {
             EntityManager em = ds.getEntityManager();
             em.persist(x);
+            em.flush();
             ds.validateWork();
         }
         catch(Exception e)

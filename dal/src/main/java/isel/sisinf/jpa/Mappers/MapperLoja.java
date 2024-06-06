@@ -12,6 +12,7 @@ public class MapperLoja implements IMapper<loja, Integer> {
         try (DataScope ds = new DataScope()) {
             EntityManager em = ds.getEntityManager();
             em.persist(x);
+            em.flush();
             ds.validateWork();
         }
         catch(Exception e)

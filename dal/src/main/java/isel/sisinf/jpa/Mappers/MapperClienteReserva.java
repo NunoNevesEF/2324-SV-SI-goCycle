@@ -13,6 +13,7 @@ public class MapperClienteReserva implements IMapper<clientereserva, clienterese
         try (DataScope ds = new DataScope()) {
             EntityManager em = ds.getEntityManager();
             em.persist(x);
+            em.flush();
             ds.validateWork();
         }
         catch(Exception e)
