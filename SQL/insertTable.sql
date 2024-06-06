@@ -17,12 +17,14 @@ VALUES
 INSERT INTO dispositivo (bateria, latitude, longitude)
 VALUES
 (75.5, 41.1579, -8.6291),
-(80.2, 38.7169, -9.1390);
+(80.2, 38.7169, -9.1390),
+(100.2,23.4321, -4.3490);
 
 -- Inserindo dados na tabela bicicleta
 INSERT INTO bicicleta (modelo, peso, marca, estado, sis_mudancas, atr_disc, vel_max, autonomia, gps)
 VALUES
 ('Modelo Clássico', 15000, 'Marca X', 'livre', '18', 'C', NULL, NULL, 1),
+('Modelo Clássico', 17000, 'Marca W', 'ocupado', '33', 'A', NULL, NULL, 3),
 ('Modelo Elétrico', 20000, 'Marca Y', 'livre', '24', 'E', 25.0, 100.0, 2);
 
 -- Inserindo dados na tabela reserva
