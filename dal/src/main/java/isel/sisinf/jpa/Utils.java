@@ -17,7 +17,7 @@ public class Utils {
         }
     }
 
-    public static void createCustomer(String nome, String telefone, String morada, int cc, String email, String nacionalidade, EntityManager em) {
+    public static void createCustomer(String nome, Integer telefone, String morada, int cc, String email, String nacionalidade, EntityManager em) {
         Query query = em.createNativeQuery("INSERT INTO pessoa (nome, telefone, morada, cc, email, nacionalidade) VALUES (?1, ?2, ?3, ?4, ?5, ?6)");
         query.setParameter(1, nome);
         query.setParameter(2, telefone);
@@ -120,14 +120,14 @@ public class Utils {
     }
 
 
-    // Read User Input
+    // READ USER INPUT
     public static String[] getUserInput() {
-        Scanner scanner = new Scanner(System.in);
-        String input = scanner.nextLine();
+        Scanner input = new Scanner(System.in);
 
-        // Dividir a entrada com base na vírgula
-        return input.split(",");
+        String line = input.nextLine();
+        System.out.println("line = " + line);
+
+        return line.split(",");
     }
-
 
 }

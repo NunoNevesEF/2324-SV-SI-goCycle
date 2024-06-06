@@ -24,11 +24,12 @@ SOFTWARE.
 package isel.sisinf.ui;
 
 import isel.sisinf.jpa.DataScope;
+import isel.sisinf.model.BicicletaInfo;
 import jakarta.persistence.EntityManager;
 import isel.sisinf.jpa.Utils;
-
 import java.util.Scanner;
 import java.util.HashMap;
+import java.util.List;
 
 interface DbWorker
 {
@@ -49,22 +50,24 @@ class UI
         cancelBooking,
         about
     }
+
     private static UI __instance = null;
-  
     private HashMap<Option,DbWorker> __dbMethods;
+    private Scanner scanner;  // Add a single Scanner instance
 
     private UI()
     {
         // DO NOT CHANGE ANYTHING!
         __dbMethods = new HashMap<Option,DbWorker>();
         __dbMethods.put(Option.createCostumer, () -> UI.this.createCostumer());
-        __dbMethods.put(Option.listExistingBikes, () -> UI.this.listExistingBikes()); 
+        __dbMethods.put(Option.listExistingBikes, () -> UI.this.listExistingBikes());
         __dbMethods.put(Option.checkBikeAvailability, () -> UI.this.checkBikeAvailability());
         __dbMethods.put(Option.obtainBookings, new DbWorker() {public void doWork() {UI.this.obtainBookings();}});
         __dbMethods.put(Option.makeBooking, new DbWorker() {public void doWork() {UI.this.makeBooking();}});
         __dbMethods.put(Option.cancelBooking, new DbWorker() {public void doWork() {UI.this.cancelBooking();}});
         __dbMethods.put(Option.about, new DbWorker() {public void doWork() {UI.this.about();}});
 
+        scanner = new Scanner(System.in);  // Initialize the Scanner
     }
 
     // ADDED CODE TO UI CLASS HERE
@@ -77,7 +80,6 @@ class UI
     {
         __connectionString = s;
     }
-
     // END OF ADDED CODE TO UI CLASS
 
     public static UI getInstance()
@@ -93,7 +95,6 @@ class UI
     private Option DisplayMenu()
     {
         Option option = Option.Unknown;
-        Scanner s = new Scanner(System.in);
         try
         {
             // DO NOT CHANGE ANYTHING!
@@ -108,21 +109,16 @@ class UI
             System.out.println("7. Cancel Booking");
             System.out.println("8. About");
             System.out.print(">");
-            s = new Scanner(System.in);
-            int result = s.nextInt();
+            int result = scanner.nextInt();
             option = Option.values()[result];
         }
         catch(RuntimeException ex)
         {
             //nothing to do.
         }
-        finally
-        {
-            s.close();
-        }
         return option;
-
     }
+
     private static void clearConsole() throws Exception
     {
         // DO NOT CHANGE ANYTHING!
@@ -153,22 +149,25 @@ class UI
     }
 
     /**
-    To implement from this point forward. Do not need to change the code above.
-    -------------------------------------------------------------------------------     
-        IMPORTANT:
-    --- DO NOT MOVE IN THE CODE ABOVE. JUST HAVE TO IMPLEMENT THE METHODS BELOW ---
-    --- Other Methods and properties can be added to support implementation -------
-    -------------------------------------------------------------------------------
-    
-    */
+     To implement from this point forward. Do not need to change the code above.
+     -------------------------------------------------------------------------------
+     IMPORTANT:
+     --- DO NOT MOVE IN THE CODE ABOVE. JUST HAVE TO IMPLEMENT THE METHODS BELOW ---
+     --- Other Methods and properties can be added to support implementation -------
+     -------------------------------------------------------------------------------
+
+     */
 
     private static final int TAB_SIZE = 24;
 
     private void createCostumer() {
+        System.out.println("createCostumer()");
         System.out.println("Please write the params below in the same order");
         System.out.println("nome,telefone,morada,cc,email,nacionalidade");
 
-        String[] params = Utils.getUserInput();
+        String line = scanner.next();  // Use the existing Scanner
+
+        String[] params = line.split(",");
 
         if (params.length != 6) {
             System.out.println("Error: Invalid number of parameters. Please provide all parameters separated by commas.");
@@ -176,9 +175,9 @@ class UI
         }
 
         String nome = params[0].trim();
-        String telefone = params[1].trim();
+        int telefone = Integer.parseInt(params[1].trim());
         String morada = params[2].trim();
-        Integer cc = Integer.parseInt(params[3].trim());
+        int cc = Integer.parseInt(params[3].trim());
         String email = params[4].trim();
         String nacionalidade = params[5].trim();
 
@@ -189,15 +188,31 @@ class UI
         } catch (Exception e) {
             System.out.println("Error: " + e.getMessage());
         }
-        System.out.println("createCostumer()");
+        System.out.println("Customer was created.");
     }
-
-
 
     private void listExistingBikes()
     {
-        // TODO
         System.out.println("listExistingBikes()");
+        try (DataScope ds = new DataScope()) {
+            EntityManager em = ds.getEntityManager();
+            List<BicicletaInfo> displayInfo =  Utils.listExistingBikes(em);
+            ds.validateWork();
+            if(displayInfo.isEmpty()) {
+                System.out.println("There is not existing bikes.");
+                return;
+            } else {
+                System.out.println("---------------/-------------");
+                System.out.println("The existing Bikes are the following ->");
+                for (BicicletaInfo info : displayInfo) {
+                    System.out.println(info.toString());
+                }
+            }
+        } catch (Exception e) {
+            System.out.println("Error: " + e.getMessage());
+        }
+        System.out.println("Customer was created.");
+
     }
 
     private void checkBikeAvailability()
@@ -216,14 +231,14 @@ class UI
     {
         // TODO
         System.out.println("makeBooking()");
-        
+
     }
 
     private void cancelBooking()
     {
         // TODO
         System.out.println("cancelBooking");
-        
+
     }
     private void about()
     {
@@ -236,8 +251,8 @@ class UI
     }
 }
 
-public class App{
-    public static void main(String[] args) throws Exception{
+public class App {
+    public static void main(String[] args) throws Exception {
         //String url = "jdbc:postgresql://sisinfvlab1.dyn.fil.isel.pt:5432/?user=G16T42D&password=G16T42D&ssl=false";
         String url = "jdbc:postgresql://localhost:5433/?user=postgres&password=postgres&ssl=false";
         UI.getInstance().setConnectionString(url);
