@@ -25,8 +25,17 @@ package isel.sisinf.ui;
 
 import isel.sisinf.jpa.DataScope;
 import isel.sisinf.model.BicicletaInfo;
+import isel.sisinf.model.ReservaInfo;
 import jakarta.persistence.EntityManager;
 import isel.sisinf.jpa.Utils;
+import org.eclipse.persistence.jpa.jpql.parser.DateTime;
+
+import java.math.BigDecimal;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.HashMap;
 import java.util.List;
@@ -199,8 +208,7 @@ class UI
             List<BicicletaInfo> displayInfo =  Utils.listExistingBikes(em);
             ds.validateWork();
             if(displayInfo.isEmpty()) {
-                System.out.println("There is not existing bikes.");
-                return;
+                System.out.println("There are no existing bikes.");
             } else {
                 System.out.println("---------------/-------------");
                 System.out.println("The existing Bikes are the following ->");
@@ -211,27 +219,90 @@ class UI
         } catch (Exception e) {
             System.out.println("Error: " + e.getMessage());
         }
-        System.out.println("Customer was created.");
-
     }
 
     private void checkBikeAvailability()
     {
-        // TODO
         System.out.println("checkBikeAvailability()");
-
+        try (DataScope ds = new DataScope()) {
+            EntityManager em = ds.getEntityManager();
+            List<BicicletaInfo> displayInfo =  Utils.checkBikeAvailability(em);
+            ds.validateWork();
+            if(displayInfo.isEmpty()) {
+                System.out.println("There are no bikes available.");
+            } else {
+                System.out.println("---------------/-------------");
+                System.out.println("The available bikes are the following ->");
+                for (BicicletaInfo info : displayInfo) {
+                    System.out.println(info.toString());
+                }
+            }
+        } catch (Exception e) {
+            System.out.println("Error: " + e.getMessage());
+        }
     }
 
     private void obtainBookings() {
-        // TODO
         System.out.println("obtainBookings()");
+        try (DataScope ds = new DataScope()) {
+            EntityManager em = ds.getEntityManager();
+            List<ReservaInfo> displayInfo =  Utils.obtainBookings(em);
+            ds.validateWork();
+            if(displayInfo.isEmpty()) {
+                System.out.println("Currently there are no bookings.");
+            } else {
+                System.out.println("---------------/-------------");
+                System.out.println("The current bookings are the following ->");
+                for (ReservaInfo info : displayInfo) {
+                    System.out.println(info.toString());
+                }
+            }
+        } catch (Exception e) {
+            System.out.println("Error: " + e.getMessage());
+        }
     }
 
+    // FALTA DAR UPDATE NA BICICLETA PARA O ESTADO OCUPADO
     private void makeBooking()
     {
-        // TODO
+        // 2025-12-12 21:21:21,2026-12-12 21:21:21,65.00,1 USAR PARA TESTES
         System.out.println("makeBooking()");
+        System.out.println("Please write the params below in the same order");
+        System.out.println("dtinicio,dtfim,valor,bicicleta");
+        System.out.println("examples of date ->YYYY-MM-DD HH:MM:SS");
 
+        ArrayList<String> tokens = new ArrayList<>();
+
+        while (scanner.hasNext()) {
+            String token = scanner.next();
+            if (!token.isEmpty()) {
+                tokens.add(token);
+            }
+        }
+
+        String[] params = tokens.toArray(new String[0]);
+
+        if (params.length != 4) {
+            System.out.println("Error: Invalid number of parameters. Please provide all parameters separated by commas.");
+            return;
+        }
+
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+        try (DataScope ds = new DataScope()) {
+
+            Timestamp dtinicio = new Timestamp(dateFormat.parse(params[0].trim()).getTime());
+            Timestamp dtfim = new Timestamp(dateFormat.parse(params[1].trim()).getTime());
+            BigDecimal valor = new BigDecimal(params[2].trim());
+            int bicicleta = Integer.parseInt(params[3].trim());
+
+            EntityManager em = ds.getEntityManager();
+            Utils.makeBooking(bicicleta,dtinicio,dtfim,valor,em);
+            ds.validateWork();
+        } catch (Exception e) {
+            System.out.println("Error: " + e.getMessage());
+        }
+        System.out.println("Booking was made.");
     }
 
     private void cancelBooking()

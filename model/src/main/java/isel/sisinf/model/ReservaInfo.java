@@ -1,13 +1,15 @@
 package isel.sisinf.model;
 
+import java.math.BigDecimal;
+
 public class ReservaInfo {
     private Integer numero;
     private String dtInicio;
     private String dtFim;
-    private Double valor;
+    private BigDecimal valor;
     private Integer bicicletaId;
 
-    public ReservaInfo(Integer numero, String dtInicio, String dtFim, Double valor, Integer bicicletaId) {
+    public ReservaInfo(Integer numero, String dtInicio, String dtFim, BigDecimal valor, Integer bicicletaId) {
         this.numero = numero;
         this.dtInicio = dtInicio;
         this.dtFim = dtFim;

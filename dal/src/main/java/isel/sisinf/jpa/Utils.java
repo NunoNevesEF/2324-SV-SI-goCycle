@@ -40,7 +40,7 @@ public class Utils {
             String marca = (String) result[3];
             String estado = (String) result[4];
             String sisMudancas = (String) result[5];
-            char atrDisc = (char) result[6];
+            char atrDisc = ((String) result[6]).charAt(0);
             Double velMax = (Double) result[7];
             Double autonomia = (Double) result[8];
             Integer gps = (Integer) result[9];
@@ -62,11 +62,11 @@ public class Utils {
         for (Object[] result : results) {
             Integer id = (Integer) result[0];
             String modelo = (String) result[1];
-            double peso = (Double) result[2];
+            Double peso = (Double) result[2];
             String marca = (String) result[3];
             String estado = (String) result[4];
             String sisMudancas = (String) result[5];
-            char atrDisc = (Character) result[6];
+            char atrDisc = ((String) result[6]).charAt(0);
             Double velMax = (Double) result[7];
             Double autonomia = (Double) result[8];
             Integer gps = (Integer) result[9];
@@ -86,7 +86,7 @@ public class Utils {
             Integer numero = (Integer) result[0];
             String dtInicio = String.valueOf(result[1]);
             String dtFim = String.valueOf(result[2]);
-            Double valor = (Double) result[3];
+            BigDecimal valor = convertMoneyToBigDecimal((Double) result[3]);
             Integer bicicletaId = (Integer) result[4];
 
             ReservaInfo reservaInfo = new ReservaInfo(numero, dtInicio, dtFim, valor, bicicletaId);
@@ -128,6 +128,14 @@ public class Utils {
         System.out.println("line = " + line);
 
         return line.split(",");
+    }
+
+    private static BigDecimal convertMoneyToBigDecimal(Double moneyValue) {
+        if (moneyValue != null) {
+            return BigDecimal.valueOf(moneyValue).setScale(2);
+        } else {
+            return BigDecimal.ZERO;
+        }
     }
 
 }
