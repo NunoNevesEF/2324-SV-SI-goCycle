@@ -1,6 +1,7 @@
 package isel.sisinf.jpa;
 
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityTransaction;
 import jakarta.persistence.Query;
 import isel.sisinf.model.*;
 import jakarta.persistence.StoredProcedureQuery;
@@ -96,38 +97,55 @@ public class Utils {
     }
 
     public static void makeBooking(Integer bicicletaId, Timestamp dtInicio, Timestamp dtFim, BigDecimal valor, EntityManager em) {
-        reserva reserva = new reserva();
-        reserva.setBicicletaId(bicicletaId);
-        reserva.setDtinicio(dtInicio);
-        reserva.setDtfim(dtFim);
-        reserva.setValor(valor);
-
-        em.getTransaction().begin();
-        em.persist(reserva);
-        em.getTransaction().commit();
+        Query query = em.createNativeQuery("INSERT INTO reserva (dtinicio, dtfim, valor, bicicleta) VALUES (?1, ?2, ?3, ?4)");
+        query.setParameter(1, dtInicio);
+        query.setParameter(2, dtFim);
+        query.setParameter(3, valor);
+        query.setParameter(4, bicicletaId);
+        query.executeUpdate();
     }
 
-    public static void cancelBooking(Integer reservaId,EntityManager em) {
-        em.getTransaction().begin();
+    public static void cancelBooking(Integer reservaId, EntityManager em) {
+        Query query1 = em.createNativeQuery("DELETE FROM clientereserva WHERE reserva = " + reservaId);
+        query1.executeUpdate();
+        Query query2 = em.createNativeQuery("DELETE FROM reserva WHERE numero = " + reservaId);
+        int deletedCount = query2.executeUpdate();
 
-        reserva reserva = em.find(reserva.class, reservaId);
-        if (reserva == null) {
+        if (deletedCount == 0) {
             throw new IllegalArgumentException("Reserva não encontrada para o ID: " + reservaId);
         }
-
-        em.remove(reserva);
         em.getTransaction().commit();
     }
 
 
     // READ USER INPUT
-    public static String[] getUserInput() {
+    public static String[] getUserInputWithNoSpaces() {
         Scanner input = new Scanner(System.in);
 
         String line = input.nextLine();
         System.out.println("line = " + line);
 
         return line.split(",");
+    }
+
+    public static String[] getUserInputForBooking() {
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.print("dtinicio: ");
+        String dtinicio = scanner.next();
+
+        System.out.print("dtfim: ");
+        String dtfim = scanner.next();
+
+        System.out.print("valor: ");
+        BigDecimal valor = scanner.nextBigDecimal();
+
+        System.out.print("bicicleta: ");
+        int bicicleta = scanner.nextInt();
+
+        scanner.close();
+
+        return new String[]{dtinicio, dtfim, valor.toString(), String.valueOf(bicicleta)};
     }
 
     private static BigDecimal convertMoneyToBigDecimal(Double moneyValue) {

@@ -180,24 +180,23 @@ class UI
 
         if (params.length != 6) {
             System.out.println("Error: Invalid number of parameters. Please provide all parameters separated by commas.");
-            return;
-        }
+        } else {
+            String nome = params[0].trim();
+            int telefone = Integer.parseInt(params[1].trim());
+            String morada = params[2].trim();
+            int cc = Integer.parseInt(params[3].trim());
+            String email = params[4].trim();
+            String nacionalidade = params[5].trim();
 
-        String nome = params[0].trim();
-        int telefone = Integer.parseInt(params[1].trim());
-        String morada = params[2].trim();
-        int cc = Integer.parseInt(params[3].trim());
-        String email = params[4].trim();
-        String nacionalidade = params[5].trim();
-
-        try (DataScope ds = new DataScope()) {
-            EntityManager em = ds.getEntityManager();
-            Utils.createCustomer(nome, telefone, morada, cc, email, nacionalidade, em);
-            ds.validateWork();
-        } catch (Exception e) {
-            System.out.println("Error: " + e.getMessage());
+            try (DataScope ds = new DataScope()) {
+                EntityManager em = ds.getEntityManager();
+                Utils.createCustomer(nome, telefone, morada, cc, email, nacionalidade, em);
+                ds.validateWork();
+            } catch (Exception e) {
+                System.out.println("Error: " + e.getMessage());
+            }
+            System.out.println("Customer was created.");
         }
-        System.out.println("Customer was created.");
     }
 
     private void listExistingBikes()
@@ -265,52 +264,63 @@ class UI
     // FALTA DAR UPDATE NA BICICLETA PARA O ESTADO OCUPADO
     private void makeBooking()
     {
-        // 2025-12-12 21:21:21,2026-12-12 21:21:21,65.00,1 USAR PARA TESTES
+        // 2025-12-12/21:21:21,2026-12-12/21:21:21,65.00,1 USAR PARA TESTES
         System.out.println("makeBooking()");
         System.out.println("Please write the params below in the same order");
         System.out.println("dtinicio,dtfim,valor,bicicleta");
-        System.out.println("examples of date ->YYYY-MM-DD HH:MM:SS");
+        System.out.println("examples of date ->YYYY-MM-DD/HH:MM:SS");
 
-        ArrayList<String> tokens = new ArrayList<>();
+        String line = scanner.next().replace("/", " "); // trocar pois não pode haver espaços
 
-        while (scanner.hasNext()) {
-            String token = scanner.next();
-            if (!token.isEmpty()) {
-                tokens.add(token);
-            }
-        }
-
-        String[] params = tokens.toArray(new String[0]);
+        String[] params = line.split(",");
 
         if (params.length != 4) {
             System.out.println("Error: Invalid number of parameters. Please provide all parameters separated by commas.");
-            return;
-        }
+        } else {
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-
-        try (DataScope ds = new DataScope()) {
-
-            Timestamp dtinicio = new Timestamp(dateFormat.parse(params[0].trim()).getTime());
-            Timestamp dtfim = new Timestamp(dateFormat.parse(params[1].trim()).getTime());
             BigDecimal valor = new BigDecimal(params[2].trim());
             int bicicleta = Integer.parseInt(params[3].trim());
 
-            EntityManager em = ds.getEntityManager();
-            Utils.makeBooking(bicicleta,dtinicio,dtfim,valor,em);
-            ds.validateWork();
-        } catch (Exception e) {
-            System.out.println("Error: " + e.getMessage());
+            try (DataScope ds = new DataScope()) {
+                Timestamp dtinicio = new Timestamp(dateFormat.parse(params[0].trim()).getTime());
+                Timestamp dtfim = new Timestamp(dateFormat.parse(params[1].trim()).getTime());
+                EntityManager em = ds.getEntityManager();
+                Utils.makeBooking(bicicleta,dtinicio,dtfim,valor,em);
+                ds.validateWork();
+            } catch (Exception e) {
+                System.out.println("Error: " + e.getMessage());
+            }
+            System.out.println("Booking was made.");
         }
-        System.out.println("Booking was made.");
     }
 
+    // FALTA DAR UPDATE NA BICICLETA PARA O ESTADO LIVRE
     private void cancelBooking()
     {
-        // TODO
         System.out.println("cancelBooking");
+        System.out.println("Please write the id of the booking you want to cancel.");
+
+        String line = scanner.next();  // Use the existing Scanner
+
+        String[] params = line.split(",");
+
+        if (params.length != 1) {
+            System.out.println("Error: Invalid number of parameters. Please provide all parameters separated by commas.");
+        } else {
+            try (DataScope ds = new DataScope()) {
+                int id = Integer.parseInt(params[0].trim());
+                EntityManager em = ds.getEntityManager();
+                Utils.cancelBooking(id,em);
+                ds.validateWork();
+            } catch (Exception e) {
+                System.out.println("Error: " + e.getMessage());
+            }
+            System.out.println("Booking was cancelled.");
+        }
 
     }
+
     private void about()
     {
         System.out.println("Group ID: G16T42D");
