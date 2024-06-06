@@ -122,8 +122,6 @@ public class Utils {
         Query query3 = em.createNativeQuery("UPDATE bicicleta SET estado = 'livre' WHERE id = ?1");
         query3.setParameter(1, reservaId);
         query3.executeUpdate();
-
-        em.getTransaction().commit();
     }
 
 
