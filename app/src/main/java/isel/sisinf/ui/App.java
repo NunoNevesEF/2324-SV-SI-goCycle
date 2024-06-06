@@ -26,16 +26,14 @@ package isel.sisinf.ui;
 import isel.sisinf.jpa.DataScope;
 import isel.sisinf.model.BicicletaInfo;
 import isel.sisinf.model.ReservaInfo;
+import isel.sisinf.model.pessoa;
+import isel.sisinf.model.reserva;
 import jakarta.persistence.EntityManager;
 import isel.sisinf.jpa.Utils;
-import org.eclipse.persistence.jpa.jpql.parser.DateTime;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.HashMap;
 import java.util.List;
@@ -180,6 +178,8 @@ class UI
         if (params.length != 6) {
             System.out.println("Error: Invalid number of parameters. Please provide all parameters separated by commas.");
         } else {
+            pessoa pessoa = new pessoa();
+
             String nome = params[0].trim();
             int telefone = Integer.parseInt(params[1].trim());
             String morada = params[2].trim();
@@ -187,9 +187,15 @@ class UI
             String email = params[4].trim();
             String nacionalidade = params[5].trim();
 
+            pessoa.setNome(nome);
+            pessoa.setTelefone(telefone);
+            pessoa.setMorada(morada);
+            pessoa.setCC(cc);
+            pessoa.setEmail(email);
+            pessoa.setNacionalidade(nacionalidade);
+
             try (DataScope ds = new DataScope()) {
-                EntityManager em = ds.getEntityManager();
-                Utils.createCustomer(nome, telefone, morada, cc, email, nacionalidade, em);
+                Utils.createCustomer(pessoa);
                 ds.validateWork();
             } catch (Exception e) {
                 System.out.println("Error: " + e.getMessage());
@@ -202,8 +208,7 @@ class UI
     {
         System.out.println("listExistingBikes()");
         try (DataScope ds = new DataScope()) {
-            EntityManager em = ds.getEntityManager();
-            List<BicicletaInfo> displayInfo =  Utils.listExistingBikes(em);
+            List<BicicletaInfo> displayInfo =  Utils.listExistingBikes();
             ds.validateWork();
             if(displayInfo.isEmpty()) {
                 System.out.println("There are no existing bikes.");
@@ -282,8 +287,14 @@ class UI
             try (DataScope ds = new DataScope()) {
                 Timestamp dtinicio = new Timestamp(dateFormat.parse(params[0].trim()).getTime());
                 Timestamp dtfim = new Timestamp(dateFormat.parse(params[1].trim()).getTime());
-                EntityManager em = ds.getEntityManager();
-                Utils.makeBooking(bicicleta, dtinicio, dtfim, valor, em);
+
+                reserva reserva = new reserva();
+                reserva.setDtinicio(dtinicio);
+                reserva.setDtfim(dtfim);
+                reserva.setValor(valor);
+                reserva.setBicicletaId(bicicleta);
+
+                Utils.makeBooking(reserva);
                 ds.validateWork();
             } catch (Exception e) {
                 System.out.println("Error: " + e.getMessage());
@@ -307,7 +318,7 @@ class UI
             try (DataScope ds = new DataScope()) {
                 int id = Integer.parseInt(params[0].trim());
                 EntityManager em = ds.getEntityManager();
-                Utils.cancelBooking(id,em);
+                Utils.cancelBooking(id, em);
                 ds.validateWork();
             } catch (Exception e) {
                 System.out.println("Error: " + e.getMessage());
@@ -331,7 +342,7 @@ class UI
 public class App {
     public static void main(String[] args) throws Exception {
         //String url = "jdbc:postgresql://sisinfvlab1.dyn.fil.isel.pt:5432/?user=G16T42D&password=G16T42D&ssl=false";
-        String url = "jdbc:postgresql://localhost:5433/?user=postgres&password=postgres&ssl=false";
+        String url = "jdbc:postgresql://localhost:5432/?user=postgres&password=postgres&ssl=false";
         UI.getInstance().setConnectionString(url);
         UI.getInstance().Run();
     }

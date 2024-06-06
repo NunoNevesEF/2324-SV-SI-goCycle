@@ -24,7 +24,7 @@ public class reserva {
 
     @ManyToOne
     @JoinColumn(name = "bicicleta", referencedColumnName = "id", nullable = false)
-    private bicicleta bicicleta;
+    private isel.sisinf.model.bicicleta bicicleta;
 
     // Getters e Setters
 
@@ -44,12 +44,12 @@ public class reserva {
 
     public void setValor(BigDecimal valor) {this.valor = valor;}
 
-    public bicicleta getBicicleta() {return bicicleta;}
+    public isel.sisinf.model.bicicleta getBicicleta() {return bicicleta;}
 
-    public void setBicicleta(bicicleta bicicleta) {this.bicicleta = bicicleta;}
+    public void setBicicleta(isel.sisinf.model.bicicleta bicicleta) {this.bicicleta = bicicleta;}
 
     public void setBicicletaId(Integer bicicletaId) {
-        bicicleta bicicleta = new bicicleta();
+        isel.sisinf.model.bicicleta bicicleta = new bicicleta();
         bicicleta.setId(bicicletaId);
         this.bicicleta = bicicleta;
     }

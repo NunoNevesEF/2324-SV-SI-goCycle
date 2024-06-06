@@ -50,7 +50,7 @@ create table reserva(
     numero    serial primary key,
     dtinicio  timestamp not null,
     dtfim     timestamp,
-    valor     money     not null,
+    valor     decimal     not null,
     bicicleta int references bicicleta (id)
 );
 

@@ -11,8 +11,12 @@ public class MapperPessoa implements IMapper<pessoa, Integer> {
     public void create (pessoa x)throws Exception{
         try (DataScope ds = new DataScope()) {
             EntityManager em = ds.getEntityManager();
+
             em.persist(x);
+            em.flush();
+
             ds.validateWork();
+            System.out.println(x + "+ created");
         }
         catch(Exception e)
         {

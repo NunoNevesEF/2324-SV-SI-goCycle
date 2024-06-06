@@ -29,6 +29,15 @@ public class RepositoryBicicleta implements IRepository<bicicleta, Integer> {
 
     }
 
+    public List<bicicleta> checkBikeAvailability() throws Exception {
+        try (DataScope ds = new DataScope()){
+            EntityManager em = ds.getEntityManager();
+            List<bicicleta> l = em.createQuery("select a from bicicleta a where a.estado='livre'", bicicleta.class).getResultList();
+            ds.validateWork();
+            return l;
+        }
+    }
+
 
     public bicicleta find(Integer Id) throws Exception {
         MapperBicicleta m = new MapperBicicleta();

@@ -1,7 +1,10 @@
 package isel.sisinf.jpa;
 
+import isel.sisinf.jpa.Repositories.RepositoryBicicleta;
+import isel.sisinf.jpa.Repositories.RepositoryClienteReserva;
+import isel.sisinf.jpa.Repositories.RepositoryPessoa;
+import isel.sisinf.jpa.Repositories.RepositoryReserva;
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityTransaction;
 import jakarta.persistence.Query;
 import isel.sisinf.model.*;
 import jakarta.persistence.StoredProcedureQuery;
@@ -18,7 +21,7 @@ public class Utils {
         }
     }
 
-    public static void createCustomer(String nome, Integer telefone, String morada, int cc, String email, String nacionalidade, EntityManager em) {
+    /*public static void createCustomer(String nome, Integer telefone, String morada, int cc, String email, String nacionalidade, EntityManager em) {
         Query query = em.createNativeQuery("INSERT INTO pessoa (nome, telefone, morada, cc, email, nacionalidade) VALUES (?1, ?2, ?3, ?4, ?5, ?6)");
         query.setParameter(1, nome);
         query.setParameter(2, telefone);
@@ -27,9 +30,14 @@ public class Utils {
         query.setParameter(5, email);
         query.setParameter(6, nacionalidade);
         query.executeUpdate();
+    }*/
+
+    public static void createCustomer(pessoa pessoa) throws Exception {
+        RepositoryPessoa repositoryPessoa = new RepositoryPessoa();
+        repositoryPessoa.create(pessoa);
     }
 
-    public static List<BicicletaInfo> listExistingBikes(EntityManager em) {
+    /*public static List<BicicletaInfo> listExistingBikes(EntityManager em) {
         Query query = em.createNativeQuery("SELECT * FROM bicicleta");
         List<Object[]> results = query.getResultList();
 
@@ -51,9 +59,15 @@ public class Utils {
         }
 
         return bicicletaInfo;
+    }*/
+
+    public static List<BicicletaInfo> listExistingBikes() throws Exception {
+        RepositoryBicicleta repositoryBicicleta = new RepositoryBicicleta();
+        List<bicicleta> l = repositoryBicicleta.getAll();
+        return getBicicletaInfos(l);
     }
 
-    public static List<BicicletaInfo> checkBikeAvailability(EntityManager em){
+    /*public static List<BicicletaInfo> checkBikeAvailability(EntityManager em){
         StoredProcedureQuery query = em.createStoredProcedureQuery("checkBikeAvailability");
         query.execute();
         List<Object[]> results = query.getResultList();
@@ -76,9 +90,38 @@ public class Utils {
             availableBikes.add(bikeInfo);
         }
         return availableBikes;
+    }*/
+
+    public static List<BicicletaInfo> checkBikeAvailability(EntityManager em) throws Exception {
+        RepositoryBicicleta repositoryBicicleta = new RepositoryBicicleta();
+        List<bicicleta> l = repositoryBicicleta.checkBikeAvailability();
+
+        return getBicicletaInfos(l);
     }
 
-    public static List<ReservaInfo> obtainBookings(EntityManager em) {
+    private static List<BicicletaInfo> getBicicletaInfos(List<bicicleta> l) {
+        List<BicicletaInfo> bicicles = new ArrayList<>();
+
+        for (isel.sisinf.model.bicicleta bicicleta : l) {
+            Integer id = bicicleta.getId();
+            String modelo = bicicleta.getModelo();
+            Double peso = bicicleta.getPeso();
+            String marca = bicicleta.getMarca();
+            String estado = bicicleta.getEstado();
+            String sisMudancas = bicicleta.getSisMudancas();
+            char atrDisc = bicicleta.getAtrDisc();
+            Double velMax = bicicleta.getVelMax();
+            Double autonomia = bicicleta.getAutonomia();
+            Integer gps = bicicleta.getGps().getNoserie();
+
+            BicicletaInfo bikeInfo = new BicicletaInfo(id, modelo, peso, marca, estado, sisMudancas, atrDisc, velMax, autonomia,gps);
+            bicicles.add(bikeInfo);
+        }
+
+        return bicicles;
+    }
+
+    /*public static List<ReservaInfo> obtainBookings(EntityManager em) {
         Query query = em.createNativeQuery("SELECT * FROM reserva");
         List<Object[]> results = query.getResultList();
 
@@ -94,9 +137,29 @@ public class Utils {
             bookings.add(reservaInfo);
         }
         return bookings;
+    }*/
+
+    public static List<ReservaInfo> obtainBookings(EntityManager em) throws Exception {
+        RepositoryReserva repositoryReserva = new RepositoryReserva();
+        List<reserva> r = repositoryReserva.getAll();
+
+        List<ReservaInfo> bookings = new ArrayList<>();
+
+        for (isel.sisinf.model.reserva reserva : r) {
+            Integer numero = reserva.getNumero();
+            String dtInicio = String.valueOf(reserva.getDtinicio());
+            String dtFim = String.valueOf(reserva.getDtfim());
+            BigDecimal valor = reserva.getValor();
+            Integer bicicletaId = reserva.getBicicleta().getId();
+
+            ReservaInfo reservaInfo = new ReservaInfo(numero, dtInicio, dtFim, valor, bicicletaId);
+            bookings.add(reservaInfo);
+        }
+
+        return bookings;
     }
 
-    public static void makeBooking(Integer bicicletaId, Timestamp dtInicio, Timestamp dtFim, BigDecimal valor, EntityManager em) {
+    /*public static void makeBooking(Integer bicicletaId, Timestamp dtInicio, Timestamp dtFim, BigDecimal valor, EntityManager em) {
         Query query1 = em.createNativeQuery("INSERT INTO reserva (dtinicio, dtfim, valor, bicicleta) VALUES (?1, ?2, ?3, ?4)");
         query1.setParameter(1, dtInicio);
         query1.setParameter(2, dtFim);
@@ -107,9 +170,14 @@ public class Utils {
         Query query2 = em.createNativeQuery("UPDATE bicicleta SET estado = 'ocupado' WHERE id = ?1");
         query2.setParameter(1, bicicletaId);
         query2.executeUpdate();
+    }*/
+
+    public static void makeBooking(reserva reserva) throws Exception {
+        RepositoryReserva repositoryReserva = new RepositoryReserva();
+        repositoryReserva.create(reserva);
     }
 
-    public static void cancelBooking(Integer reservaId, EntityManager em) {
+    /*public static void cancelBooking(Integer reservaId, EntityManager em) {
         Query query1 = em.createNativeQuery("DELETE FROM clientereserva WHERE reserva = " + reservaId);
         query1.executeUpdate();
         Query query2 = em.createNativeQuery("DELETE FROM reserva WHERE numero = " + reservaId);
@@ -122,6 +190,23 @@ public class Utils {
         Query query3 = em.createNativeQuery("UPDATE bicicleta SET estado = 'livre' WHERE id = ?1");
         query3.setParameter(1, reservaId);
         query3.executeUpdate();
+    }*/
+
+    public static void cancelBooking(Integer reservaId, EntityManager em) throws Exception {
+        Query query1 = em.createNativeQuery("DELETE FROM clientereserva WHERE reserva = " + reservaId);
+        query1.executeUpdate();
+
+
+        RepositoryReserva repositoryReserva = new RepositoryReserva();
+        RepositoryBicicleta repositoryBicicleta = new RepositoryBicicleta();
+
+        reserva reserva = repositoryReserva.find(reservaId);
+        bicicleta bicicleta = reserva.getBicicleta();
+
+        repositoryReserva.delete(reserva);
+
+        bicicleta.setEstado("livre");
+        repositoryBicicleta.update(bicicleta);
     }
 
 
