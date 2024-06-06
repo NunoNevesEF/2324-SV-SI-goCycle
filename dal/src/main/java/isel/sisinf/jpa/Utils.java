@@ -175,6 +175,13 @@ public class Utils {
     public static void makeBooking(reserva reserva) throws Exception {
         RepositoryReserva repositoryReserva = new RepositoryReserva();
         repositoryReserva.create(reserva);
+
+        reserva newReserva = repositoryReserva.find(reserva.getNumero());
+        RepositoryBicicleta repositoryBicicleta = new RepositoryBicicleta();
+        bicicleta bicicleta = newReserva.getBicicleta();
+        bicicleta.setEstado("ocupado");
+        repositoryBicicleta.update(bicicleta);
+
     }
 
     /*public static void cancelBooking(Integer reservaId, EntityManager em) {
